@@ -4,7 +4,7 @@ import ItemComponent from '../components/ItemComponent';
 
 import { db } from '../config';
 
-let itemsRef = db.ref('items').orderByChild('timeMilli');
+let itemsRef = db.ref('items');
 
 function merge(left, right) {
   let arr = [];
@@ -35,7 +35,6 @@ export default class List extends Component {
   state = {
     items: []
   };
-
   componentDidMount() {
     itemsRef.on('value', snapshot => {
       let data = snapshot.val();
@@ -44,13 +43,13 @@ export default class List extends Component {
       this.setState({ items });
     });
   }
-
   render() {
+    
     return (
       <>
-        {this.state.items.length > 0 ? (
+        {(this.state.items.length > 0) ? (
           <ScrollView>
-            <ItemComponent items={this.state.items} />
+            <ItemComponent user={this.props.user} firebase={db} items={this.state.items} />
           </ScrollView>
         ) : (
           <Text>No items</Text>
