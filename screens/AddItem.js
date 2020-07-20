@@ -14,14 +14,15 @@ import Header from '../components/HeaderBack';
 
 import { db } from '../config';
 
-let addItem = (item, desc, timeS, timeM, linkN, imageN) => {
+let addItem = (item, desc, timeS, timeM, linkN, imageN, user) => {
   db.ref('/items').push({
     name: item,
     description: desc,
     link: linkN,
     image: imageN,
     timeString: timeS,
-    timeMilli: timeM
+    timeMilli: timeM,
+    profilePic: user.picture
   });
 };
 
@@ -72,7 +73,7 @@ function DatePick(props) {
     } else if(selectedDate == "N/A") {
       Alert.alert('Please select a date and time')
     } else {
-      addItem(name, desc, selectedDate, selectedDateMilli, link, image);
+      addItem(name, desc, selectedDate, selectedDateMilli, link, image, props.user);
       Alert.alert('Item saved successfully');
       props.nav.navigate('Home')
       console.log(props.nav)
@@ -145,13 +146,14 @@ function DatePick(props) {
   );
   
 }
-export default function AddItem({navigation}) {
+export default function AddItem({route,navigation}) {
+  const { user } = route.params;
 
   return (
     <>
       <Header nav={navigation}/>
       <View style={styles.main}>
-        <DatePick nav={navigation}/>
+        <DatePick user={user} nav={navigation}/>
       </View>
     </>
   );

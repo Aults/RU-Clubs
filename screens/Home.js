@@ -14,7 +14,7 @@ if (!global.atob) { global.atob = decode }
 
 function ChooseHeader(props) {
   if(props.user != null && props.user.addPermission) {
-    return(<><HeaderAdd nav={props.nav}/></>)
+    return(<><HeaderAdd firebase={props.firebase} user={props.user} nav={props.nav}/></>)
   }
   return(<><Header/></>)
 }
@@ -53,15 +53,17 @@ export default function Home({route, navigation}, props) {
     navigation.navigate('Login')
   }
   if(user!=null) {
+    firebase.firestore().collection('users').doc(user.id).update({fullName:"AdminUpdate"})
+    console.log(user.id)
     navigation.navigate('Home')
   }
   return (
     <>
-      <ChooseHeader user={user} nav={navigation} />
+      <ChooseHeader user={user} firebase={firebase} nav={navigation} />
       <List user={user} firebase={firebase} />
       <Button
         title="Add an Item"
-        onPress={() => navigation.navigate('AddItem')}
+        onPress={() => navigation.navigate('AddItem', {user:user})}
       />
     </>
   );

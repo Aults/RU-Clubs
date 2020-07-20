@@ -113,6 +113,20 @@ function CheckExpiration(props) {
   return (<></>)
 }
 
+function ProfilePic(props) {
+  if(props.uri == null || props.uri == "") return(<View style={{width:70}}></View>)
+  return (
+    <View style={{paddingLeft: 4}}>
+      <Image
+        source={{uri:props.uri}}
+        fadeDuration={0}
+        // resizeMode='contain'
+        style={{width: 70, marginTop: 5, height: 70, borderRadius: 70 / 2, overflow: "hidden", borderWidth: 1.5,borderColor: "black"}}
+      />
+    </View>
+  )
+}
+
 function InitialComp(props) {
   if(props.item.name=="ADMINSINGULAREVENT918") return(<></>)
   const _renderTruncatedFooter = (handlePress) => {
@@ -140,12 +154,7 @@ function InitialComp(props) {
         <CheckExpiration item={props.item}/>
         <View style={{flex:1, justifyContent: "space-between", flexDirection:'row'}}> 
         {/* Profile Pic VS Info */}
-          <Image
-            source={require('../assets/images/profile-pic.png')}
-            fadeDuration={0}
-            // resizeMode='contain'
-            style={{width: 70, marginTop: 5, height: 70}}
-          />
+          <ProfilePic uri={props.item.profilePic}/>
           <Invitation item={props.item}/>
           <Follow firebase={props.firebase} item={props.item} user={props.user} />
         </View>

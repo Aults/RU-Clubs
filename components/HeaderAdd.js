@@ -5,17 +5,31 @@ import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import Colors from '../constants/Colors';
 
 export default function HeaderAdd(props) {
-  const handleBack = () => {
+  const handleAdd = () => {
     props.nav.navigate('AddItem')
+  };
+  const handleProfile = () => {
+    props.nav.navigate('Profile', {user:props.user, firebase:props.firebase})
   };
   return (
     <View style={styles.head}>
-      <View style={{width: 30}}></View>
+    <TouchableOpacity
+        style={{paddingTop: '13%', paddingRight: '1%'}}
+        underlayColor="white"
+        onPress={handleProfile}
+      >
+        <Image
+          source={require('../assets/eva-icons/outline/png/128/person-outline.png')}
+          fadeDuration={0}
+          // resizeMode='contain'
+          style={{width: 30, height: 30}}
+        />
+      </TouchableOpacity>
       <Text style={styles.textS}>RU Clubs</Text>
       <TouchableOpacity
         style={{paddingTop: '13%', paddingRight: '1%'}}
         underlayColor="white"
-        onPress={handleBack}
+        onPress={handleAdd}
       >
         <Image
           source={require('../assets/eva-icons/outline/png/128/plus-circle-outline.png')}
