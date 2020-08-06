@@ -6,7 +6,7 @@ import Colors from '../constants/Colors';
 
 export default function HeaderAdd(props) {
   const handleAdd = () => {
-    props.nav.navigate('AddItem')
+    props.nav.navigate('AddItem', {user:props.user})
   };
   const handleProfile = () => {
     props.nav.navigate('Profile', {user:props.user, firebase:props.firebase})

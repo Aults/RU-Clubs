@@ -146,7 +146,7 @@ function DatePick(props) {
   );
   
 }
-export default function AddItem({route,navigation}) {
+export default function AddItem({ route, navigation }) {
   const { user } = route.params;
 
   return (
