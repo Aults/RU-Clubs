@@ -53,7 +53,7 @@ export default function Home({route, navigation}, props) {
     navigation.navigate('Login')
   }
   if(user!=null) {
-    firebase.firestore().collection('users').doc(user.id).update({fullName:"AdminUpdate"})
+    //firebase.firestore().collection('users').doc(user.id).update({fullName:"Not Admin Update"})
     console.log(user.id)
     navigation.navigate('Home')
   }
@@ -61,10 +61,6 @@ export default function Home({route, navigation}, props) {
     <>
       <ChooseHeader user={user} firebase={firebase} nav={navigation} />
       <List user={user} firebase={firebase} />
-      <Button
-        title="Add an Item"
-        onPress={() => navigation.navigate('AddItem', {user:user})}
-      />
     </>
   );
 }

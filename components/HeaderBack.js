@@ -19,7 +19,7 @@ export default function HeaderBack(props) {
           source={require('../assets/eva-icons/outline/png/128/arrow-back-outline.png')}
           fadeDuration={0}
           // resizeMode='contain'
-          style={{width: 30, height: 30}}
+          style={{width: 30, height: 30, tintColor: '#F7E0DC'}}
         />
       </TouchableOpacity>
       <Text style={styles.textS}>RU Clubs</Text>
@@ -33,12 +33,12 @@ const styles = StyleSheet.create({
     height: '13%',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    backgroundColor: 'white'
+    backgroundColor: '#BC3F33'
   },
   textS: {
     fontSize: 20,
     paddingTop: '13%',
     fontWeight: 'bold',
-    color: 'red',
+    color: 'white',
   }
 })

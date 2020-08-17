@@ -16,13 +16,13 @@ const styles = StyleSheet.create({
   head: {
     height: '10%',
     justifyContent: 'center',
-    backgroundColor: 'white'
+    backgroundColor: '#BC3F33'
   },
   textS: {
     paddingTop: '10%',
     fontSize: 20,
     fontWeight: 'bold',
-    color: 'red',
+    color: 'white',
     textAlign:'center',
   }
 })

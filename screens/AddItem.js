@@ -3,7 +3,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import {
   View,
   Platform,
-  Button,
+  ImageBackground,
   Text,
   TouchableHighlight,
   StyleSheet,
@@ -33,38 +33,10 @@ function DatePick(props) {
   const [selectedDateMilli, setSelectedDateMilli] = useState('N/A')
   const [selectedDate, setSelectedDate] = useState('N/A')
   const [show, setShow] = useState(false);
-  const [name, setName] = useState("Event name (*)")
-  const [desc, setDesc] = useState('Event description (*)')
-  const [link, setLink] = useState("Event link")
-  const [image, setImage] = useState("Event image")
-  const handleChangeName = e => {
-    if(e.nativeEvent.text.toString().substring(0,13) == "Event name (*") {
-      setName("")
-    } else {
-      setName(e.nativeEvent.text.toString())
-    }
-  };
-  const handleChangeDesc = e => {
-    if(e.nativeEvent.text.toString().substring(0,20) == "Event description (*") {
-      setDesc("")
-    } else {
-      setDesc(e.nativeEvent.text.toString())
-    }
-  };
-  const handleChangeLink = e => {
-    if(e.nativeEvent.text.toString().substring(0,9) == "Event lin") {
-      setLink("")
-    } else {
-      setLink(e.nativeEvent.text.toString())
-    }
-  };
-  const handleChangeImage = e => {
-    if(e.nativeEvent.text.toString().substring(0,10) == "Event imag") {
-      setImage("")
-    } else {
-      setImage(e.nativeEvent.text.toString())
-    }
-  };
+  const [name, setName] = useState("")
+  const [desc, setDesc] = useState("")
+  const [link, setLink] = useState("")
+  const [image, setImage] = useState("")
   const handleSubmit = () => {
     if(name == "Event name" || name == "") {
       Alert.alert('Please enter a name for the event')
@@ -73,6 +45,7 @@ function DatePick(props) {
     } else if(selectedDate == "N/A") {
       Alert.alert('Please select a date and time')
     } else {
+      console.log(props.user)
       addItem(name, desc, selectedDate, selectedDateMilli, link, image, props.user);
       Alert.alert('Item saved successfully');
       props.nav.navigate('Home')
@@ -84,7 +57,18 @@ function DatePick(props) {
     setShow(Platform.OS === 'ios');
     setDate(currentDate);
     setSelectedDateMilli(currentDate.getTime())
-    setSelectedDate(currentDate.toString())
+    if(currentDate.getHours() > 12) {
+      var hours = parseInt(currentDate.getHours(), 10)-12;
+      setSelectedDate(currentDate.toLocaleDateString() + " @ " + hours + ":" + currentDate.getMinutes() + "pm")
+    } else {
+      var hours = currentDate.getHours();
+      if(hours == 0) {
+        setSelectedDate(currentDate.toLocaleDateString() + " @ " + "12" + ":" + currentDate.getMinutes() + "am")
+
+      } else {
+        setSelectedDate(currentDate.toLocaleDateString() + " @ " + hours + ":" + currentDate.getMinutes() + "am")
+      }
+    }
   };
 
   const showMode = currentMode => {
@@ -101,47 +85,83 @@ function DatePick(props) {
   };
 
   return (
-    <View>
-      <Text style={styles.title}>Add Item</Text>
-      <TextInput style={styles.itemInputName} value={name} onChange={handleChangeName} />
-      <TextInput style={styles.itemInputDescription} value={desc} multiline={true} onChange={handleChangeDesc} />
-      <TextInput style={styles.itemInputLink} value={link} multiline={false} onChange={handleChangeLink} />
-      <TextInput style={styles.itemInputImage} value={image} multiline={false} onChange={handleChangeImage} />
-      <View style={styles.timeRegion}>
-        <TouchableHighlight
-          style={styles.button}
-          underlayColor="white"
-          onPress={showDatepicker}
-        >
-          <Text style={styles.buttonText}>Show date picker!</Text>  
-        </TouchableHighlight>
-        <TouchableHighlight
-          style={styles.button}
-          underlayColor="white"
-          onPress={showTimepicker}
-        >
-          <Text style={styles.buttonText}>Show time picker!</Text>
-        </TouchableHighlight>
-      </View>
-      <Text>{selectedDate}</Text>
-      {show && (
-        <DateTimePicker
-          testID="dateTimePicker"
-          value={date}
-          mode={mode}
-          minimumDate={new Date(2020, 0, 1)}
-          is24Hour={true}
-          display="default"
-          onChange={onChange}
+    <View style={styles.container}>
+      <ImageBackground source={require('../assets/images/background.png')} style={styles.image}>
+        <Text style={styles.title}>Add Item</Text>
+        <TextInput
+          style={styles.input}
+          placeholder='Event name (*)'
+          placeholderTextColor="#fff"
+          onChangeText={(text) => setName(text)}
+          value={name}
+          underlineColorAndroid="transparent"
+          autoCapitalize="none"
         />
-      )}
-      <TouchableHighlight
-        style={styles.greenButton}
-        underlayColor="white"
-        onPress={handleSubmit}
-      >
-        <Text style={styles.buttonText}>Add</Text>
-      </TouchableHighlight>
+        <TextInput
+          style={styles.input}
+          placeholder='Event description (*)'
+          placeholderTextColor="#fff"
+          onChangeText={(text) => setDesc(text)}
+          value={desc}
+          multiline={true}
+          underlineColorAndroid="transparent"
+          autoCapitalize="none"
+        />
+        <TextInput
+          style={styles.input}
+          placeholder='Event link'
+          placeholderTextColor="#fff"
+          onChangeText={(text) => setLink(text)}
+          value={link}
+          underlineColorAndroid="transparent"
+          autoCapitalize="none"
+        />
+        <TextInput
+          style={styles.input}
+          placeholder='Event image URL'
+          placeholderTextColor="#fff"
+          onChangeText={(text) => setImage(text)}
+          value={image}
+          underlineColorAndroid="transparent"
+          autoCapitalize="none"
+        />
+        <View style={styles.timeRegion}>
+          <TouchableHighlight
+            style={styles.button}
+            underlayColor="white"
+            onPress={showDatepicker}
+          >
+            <Text style={styles.buttonText}>Show date picker!</Text>  
+          </TouchableHighlight>
+          <TouchableHighlight
+            style={styles.button}
+            underlayColor="white"
+            onPress={showTimepicker}
+          >
+            <Text style={styles.buttonText}>Show time picker!</Text>
+          </TouchableHighlight>
+        </View>
+        <Text>{selectedDate}</Text>
+        {show && (
+          <DateTimePicker
+            testID="dateTimePicker"
+            value={date}
+            textColor="#ffff"
+            mode={mode}
+            minimumDate={new Date(2020, 0, 1)}
+            is24Hour={true}
+            display="default"
+            onChange={onChange}
+          />
+        )}
+        <TouchableHighlight
+          style={styles.buttonSubmit}
+          underlayColor="white"
+          onPress={handleSubmit}
+        >
+          <Text style={styles.buttonSubmitTitle}>Add</Text>
+        </TouchableHighlight>
+      </ImageBackground>
     </View>
   );
   
@@ -162,14 +182,51 @@ export default function AddItem({ route, navigation }) {
 const styles = StyleSheet.create({
   main: {
     flex: 1,
-    padding: 30,
     flexDirection: 'column',
     justifyContent: 'center',
+  },
+  container:{
+    flex: 1,
+    backgroundColor: '#F4ECEA'
+  },
+  buttonSubmit: {
+    backgroundColor: 'transparent',
+    marginLeft: 30,
+    marginRight: 30,
+    marginTop: 20,
+    height: 48,
+    borderRadius: 20,
+    borderWidth: 1.5,
+    borderColor: 'white',
+    alignItems: "center",
+    justifyContent: 'center'
+  },
+  buttonSubmitTitle: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: "bold"
   },
   title: {
     marginBottom: 20,
     fontSize: 25,
+    color: '#fff',
+    fontFamily: 'poppins',
     textAlign: 'center'
+  },
+  input: {
+    height: 48,
+    borderRadius: 3,
+    overflow: 'hidden',
+    backgroundColor: 'transparent',
+    marginTop: 10,
+    marginBottom: 10,
+    marginLeft: 30,
+    marginRight: 30,
+    fontSize: 18,
+    borderBottomWidth: 2,
+    borderBottomColor: '#fff',
+    color: '#E7E1DD',
+    fontFamily: 'space-mono',
   },
   timeRegion: {
     flexDirection: 'row',
@@ -193,6 +250,11 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     color: 'black'
   },
+  image:{
+    flex: 1,
+    resizeMode: "cover",
+    justifyContent: "center"
+  },
   itemInputLink: {
     height: 50,
     padding: 4,
@@ -213,19 +275,21 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: 14,
-    color: '#111',
+    color: '#fff',
+    fontFamily: 'poppins',
     alignSelf: 'center'
   },
   button: {
-    height: 45,
+    backgroundColor: 'transparent',
+    marginLeft: 30,
+    marginRight: 30,
+    marginTop: 20,
+    height: 48,
     width: 160,
-    flexDirection: 'row',
-    borderColor: 'black',
-    borderWidth: 1,
-    borderRadius: 8,
-    marginBottom: 10,
-    marginTop: 10,
-    alignSelf: 'stretch',
+    borderRadius: 20,
+    borderWidth: 1.5,
+    borderColor: 'white',
+    alignItems: "center",
     justifyContent: 'center'
   },
   greenButton: {

@@ -19,12 +19,9 @@ function Follow(props) {
 
   const onFollowPress = (user, firebase, item) => {
     var followArr = following
-    if(followArr == null) followArr=[]
-    if(!followArr.includes(item.toLowerCase())){
-      followArr.push(item.toLowerCase())
-      setFollowing(followArr)
-      firebase.ref('users/' + user.id).update({following: followArr});
-    }
+    followArr.push(item.toLowerCase())
+    firebase.ref('users/' + user.id).update({following: followArr});
+    setFollowing(followArr)
   }
 
   const onFollowingPress = (user, firebase, item) => {
@@ -36,7 +33,7 @@ function Follow(props) {
       firebase.ref('users/' + user.id).update({following: followArr});
     }
   }
-  if(following != null && props.item.name != "" && following.includes(props.item.name.toLowerCase())) {
+  if(props.item.name != "" && following.includes(props.item.name.toLowerCase())) {
     return(
       <View style={{marginLeft: '0%'}}>
         <TouchableOpacity style={styles.FollowButtonStyle} onPress={() => onFollowingPress(props.user, props.firebase, props.item.name)} activeOpacity = { .5 }>
@@ -44,14 +41,15 @@ function Follow(props) {
         </TouchableOpacity>
       </View>
     )
+  } else {
+    return(
+      <View style={{marginLeft: '0%'}}>
+        <TouchableOpacity style={styles.FollowButtonStyle} onPress={() => onFollowPress(props.user, props.firebase, props.item.name)} activeOpacity = { .5 }>
+          <Text style={styles.TextStyleRed}>Follow</Text>
+        </TouchableOpacity>
+      </View>
+    )
   }
-  return(
-    <View style={{marginLeft: '0%'}}>
-      <TouchableOpacity style={styles.FollowButtonStyle} onPress={() => onFollowPress(props.user, props.firebase, props.item.name)} activeOpacity = { .5 }>
-        <Text style={styles.TextStyleRed}>Follow</Text>
-      </TouchableOpacity>
-    </View>
-  )
 }
 
 function Invitation(props) {
@@ -59,7 +57,10 @@ function Invitation(props) {
   if(link == undefined || link == "" || link == "Event link") {return (<></>)}
   if(link.substring(0,8) != "https://") {
     link = "https://" + link
+  } else if(link.substring(0,7) != "http://") {
+    link = "http://" + link
   }
+  
   return(
     <View style={{marginLeft: '0%'}}>
       <TouchableOpacity style={styles.InvitationButtonStyle} onPress={ ()=>{ Linking.openURL(link)}} activeOpacity = { .5 }>
@@ -76,7 +77,7 @@ function Thumbnail(props) {
     url = "https://" + url
   }
   return(
-    <View style={{}}>
+    <View style={styles.thumbnail}>
       <TouchableOpacity
         style={{alignSelf:'center'}}
         //onPress={ ()=>{ Linking.openURL(url)}}
@@ -86,7 +87,7 @@ function Thumbnail(props) {
             source={{uri:url}}
             fadeDuration={0}
             // resizeMode='contain'
-            style={{width: Dimensions.get('window').width+3, resizeMode:'stretch', height: 500}}
+            style={{width: Dimensions.get('window').width-20, resizeMode:'shrink', height: 500}}
           />
       </TouchableOpacity>
 
@@ -158,21 +159,23 @@ function InitialComp(props) {
           <Invitation item={props.item}/>
           <Follow firebase={props.firebase} item={props.item} user={props.user} />
         </View>
-        <View style={{paddingLeft: 3, flexDirection:'column', width: '100%'}}>
+        <View style={{paddingLeft: 0, flexDirection:'column', width: '100%'}}>
         {/* Name, description, and time */}
           <Text style={styles.itemtext}>{props.item.name}</Text>
-          <Hyperlink linkStyle={{ color: '#2980b9'}} linkDefault={ true }>
-            <ReadMore
-              numberOfLines={2}
-              renderTruncatedFooter={_renderTruncatedFooter}
-              renderRevealedFooter={_renderRevealedFooter}
-              onReady={_handleTextReady}
-            >
-              <Text style={styles.cardTextDescription}>
-                {props.item.description}
-              </Text>
-            </ReadMore>
-          </Hyperlink>
+          <View style={{paddingLeft: 16}}>
+            <Hyperlink linkStyle={{ color: '#2980b9'}} linkDefault={ true }>
+              <ReadMore
+                numberOfLines={2}
+                renderTruncatedFooter={_renderTruncatedFooter}
+                renderRevealedFooter={_renderRevealedFooter}
+                onReady={_handleTextReady}
+              >
+                <Text style={styles.cardTextDescription}>
+                  {props.item.description}
+                </Text>
+              </ReadMore>
+            </Hyperlink>
+          </View>
           <Thumbnail item={props.item}/>
           <Text>{props.item.timeString}</Text>
         </View>
@@ -203,11 +206,16 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'space-around'
   },
+  thumbnail: {
+    margin: 8,
+    borderColor: 'transparent',
+  },
   cardTextDescription: {
     fontSize: 16,
   },
   itemtext: {
     fontSize: 24,
+    paddingLeft: 16,
     fontWeight: 'bold',
   },
   TextStyleRed:{
@@ -244,7 +252,7 @@ const styles = StyleSheet.create({
   },
   item: {
     borderWidth: 0,
-    borderBottomWidth: 1,
-    borderColor: 'gray',
+    borderBottomWidth: 2,
+    borderColor: '#BC1200',
   }
 });

@@ -1,9 +1,7 @@
 import React, { Component, useState } from 'react';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import {
   View,
-  Platform,
-  Button,
+  ImageBackground,
   Text,
   TouchableHighlight,
   StyleSheet,
@@ -21,33 +19,15 @@ let updateProf = (name, emailE, profilePicture, firebase, user) => {
     email:emailE,
     picture:profilePicture
   })
+  user.picture=profilePicture;
+  user.email=emailE;
+  user.fillName=name;
 };
 
 function ProfileComponent(props) {
-  const [name, setName] = useState("Name (*)")
-  const [email, setEmail] = useState('Email (*)')
-  const [profilePicture, setProfilePicture] = useState("Profile Picture (*)")
-  const handleChangeName = e => {
-    if(e.nativeEvent.text.toString().substring(0,7) == "Name (*") {
-      setName("")
-    } else {
-      setName(e.nativeEvent.text.toString())
-    }
-  };
-  const handleChangeEmail = e => {
-    if(e.nativeEvent.text.toString().substring(0, 8) == "Email (*") {
-      setEmail("")
-    } else {
-      setEmail(e.nativeEvent.text.toString())
-    }
-  };
-  const handleChangeProfilePicture = e => {
-    if(e.nativeEvent.text.toString().substring(0,9) == "Profile Picture (*)") {
-      setProfilePicture("")
-    } else {
-      setProfilePicture(e.nativeEvent.text.toString())
-    }
-  };
+  const [name, setName] = useState("")
+  const [email, setEmail] = useState('')
+  const [profilePicture, setProfilePicture] = useState("")
   const handleSubmit = () => {
     if(name == "Name" || name == "") {
       Alert.alert('Please enter a name')
@@ -63,18 +43,44 @@ function ProfileComponent(props) {
   };
 
   return (
-    <View>
-      <Text style={styles.title}>Update Profile</Text>
-      <TextInput style={styles.itemInputName} value={name} onChange={handleChangeName} />
-      <TextInput style={styles.itemInputDescription} value={email} multiline={true} onChange={handleChangeEmail} />
-      <TextInput style={styles.itemInputProfilePicture} value={profilePicture} multiline={false} onChange={handleChangeProfilePicture} />
-      <TouchableHighlight
-        style={styles.greenButton}
-        underlayColor="white"
-        onPress={handleSubmit}
-      >
-        <Text style={styles.buttonText}>Update</Text>
-      </TouchableHighlight>
+    <View style={styles.container}>
+      <ImageBackground source={require('../assets/images/background.png')} style={styles.image}>
+        <Text style={styles.title}>Update Profile</Text>
+        <TextInput
+          style={styles.input}
+          placeholder='Name (*)'
+          placeholderTextColor="#fff"
+          onChangeText={(text) => setName(text)}
+          value={name}
+          underlineColorAndroid="transparent"
+          autoCapitalize="none"
+        />
+        <TextInput
+          style={styles.input}
+          placeholder='Email (*)'
+          placeholderTextColor="#fff"
+          onChangeText={(text) => setEmail(text)}
+          value={email}
+          underlineColorAndroid="transparent"
+          autoCapitalize="none"
+        />
+        <TextInput
+          style={styles.input}
+          placeholder='Profile Picture (*)'
+          placeholderTextColor="#fff"
+          onChangeText={(text) => setProfilePicture(text)}
+          value={profilePicture}
+          underlineColorAndroid="transparent"
+          autoCapitalize="none"
+        />
+        <TouchableHighlight
+          style={styles.buttonSubmit}
+          underlayColor="white"
+          onPress={handleSubmit}
+        >
+          <Text style={styles.buttonSubmitTitle}>Update</Text>
+        </TouchableHighlight>
+      </ImageBackground>
     </View>
   );
   
@@ -94,17 +100,55 @@ export default function Profile({route, navigation}) {
   );
 }
 
+
 const styles = StyleSheet.create({
   main: {
     flex: 1,
-    padding: 30,
     flexDirection: 'column',
     justifyContent: 'center',
+  },
+  container:{
+    flex: 1,
+    backgroundColor: '#F4ECEA'
+  },
+  buttonSubmit: {
+    backgroundColor: 'transparent',
+    marginLeft: 30,
+    marginRight: 30,
+    marginTop: 20,
+    height: 48,
+    borderRadius: 20,
+    borderWidth: 1.5,
+    borderColor: 'white',
+    alignItems: "center",
+    justifyContent: 'center'
+  },
+  buttonSubmitTitle: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: "bold"
   },
   title: {
     marginBottom: 20,
     fontSize: 25,
+    color: '#fff',
+    fontFamily: 'poppins',
     textAlign: 'center'
+  },
+  input: {
+    height: 48,
+    borderRadius: 3,
+    overflow: 'hidden',
+    backgroundColor: 'transparent',
+    marginTop: 10,
+    marginBottom: 10,
+    marginLeft: 30,
+    marginRight: 30,
+    fontSize: 18,
+    borderBottomWidth: 2,
+    borderBottomColor: '#fff',
+    color: '#E7E1DD',
+    fontFamily: 'space-mono',
   },
   timeRegion: {
     flexDirection: 'row',
@@ -128,7 +172,21 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     color: 'black'
   },
-  itemInputProfilePicture: {
+  image:{
+    flex: 1,
+    resizeMode: "cover",
+    justifyContent: "center"
+  },
+  itemInputLink: {
+    height: 50,
+    padding: 4,
+    fontSize: 23,
+    borderWidth: 1,
+    borderColor: 'black',
+    borderRadius: 8,
+    color: 'black'
+  },
+  itemInputImage: {
     height: 50,
     padding: 4,
     fontSize: 23,
@@ -139,19 +197,21 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: 14,
-    color: '#111',
+    color: '#fff',
+    fontFamily: 'poppins',
     alignSelf: 'center'
   },
   button: {
-    height: 45,
+    backgroundColor: 'transparent',
+    marginLeft: 30,
+    marginRight: 30,
+    marginTop: 20,
+    height: 48,
     width: 160,
-    flexDirection: 'row',
-    borderColor: 'black',
-    borderWidth: 1,
-    borderRadius: 8,
-    marginBottom: 10,
-    marginTop: 10,
-    alignSelf: 'stretch',
+    borderRadius: 20,
+    borderWidth: 1.5,
+    borderColor: 'white',
+    alignItems: "center",
     justifyContent: 'center'
   },
   greenButton: {

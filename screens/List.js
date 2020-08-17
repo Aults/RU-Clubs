@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { ImageBackground, Text, StyleSheet, ScrollView } from 'react-native';
 import ItemComponent from '../components/ItemComponent';
 
 import { db } from '../config';
@@ -47,13 +47,15 @@ export default class List extends Component {
     
     return (
       <>
-        {(this.state.items.length > 0) ? (
-          <ScrollView>
-            <ItemComponent user={this.props.user} firebase={db} items={this.state.items} />
-          </ScrollView>
-        ) : (
-          <Text>No items</Text>
-        )}
+        <ImageBackground source={require('../assets/images/background.png')} style={styles.image}>
+          {(this.state.items.length > 0) ? (
+            <ScrollView>
+              <ItemComponent user={this.props.user} firebase={db} items={this.state.items} />
+            </ScrollView>
+          ) : (
+            <Text>No items</Text>
+          )}
+        </ImageBackground>
       </>
     );
   }
@@ -64,5 +66,10 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     backgroundColor: '#ebebeb'
-  }
+  },
+  image:{
+    flex: 1,
+    resizeMode: "cover",
+    justifyContent: "center"
+  }, 
 });
